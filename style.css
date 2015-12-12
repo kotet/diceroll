@@ -1,0 +1,36 @@
+html, body, input, h1, button{
+	background-color: #555;
+	color: whitesmoke;
+}
+body {
+	padding: 10px;
+}
+input {
+	width: 100%;
+	font-size: 2em;
+	margin: 0 auto;
+	border-style: none;
+}
+.startbutton {
+	color: aqua;
+	width: 100%;
+	font-size: 2em;
+	margin-top: 2px;
+	border-style: none;
+	text-align: center;
+}
+.cantuse {
+	pointer-events: none;
+	background-color: #333;
+}
+input:focus {
+    background-color: #333;
+}
+#log{
+	max-height: 20em;
+	overflow-y: scroll;
+	word-wrap: normal;
+}
+#result {
+	font-size: 2em;
+}

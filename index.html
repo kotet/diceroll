@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<title>diceroll</title>
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<link rel="stylesheet" href="style.css">
+<!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="shortcut icon" href="">
+</head>
+<body>
+	<h1>diceroll</h1>
+		<div id="inputwrapper">
+			<input type="text" id="input" value="1D100" />
+			<div id="start" class="startbutton">play↓</div>
+		</div>
+		<div id="output">
+			<div id="log">
+				入力例：<br/>
+				2d10 -- Dは小文字でも可<br/>
+				5D20 3 -- ダイスの後に半角スペースをはさみクリティカル値を指定することで無限ダイス
+			</div>
+			<div id="result">1024</div>
+		</div>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+			window.addEventListener("load",function(){
+				var button = document.getElementById("start");
+				var worker = new Worker('worker.js');
+				var input = document.getElementById("input");
+				var divlog = document.getElementById("log");
+				var divresult = document.getElementById("result");
+				
+				button.addEventListener("click",function(){
+					button.classList.add("cantuse");
+					worker.postMessage({type:"dice",value:input.value});
+					
+					worker.onmessage = function(e){
+						if(e.data.type == "log"){
+							divlog.innerText = e.data.value;
+						} else if(e.data.type == "result"){
+							divresult.innerText = e.data.value;
+							button.classList.remove("cantuse");
+						}
+					}
+					worker.onerror = function(e){
+						divlog.innerText = ['ERROR: Line ', e.lineno, ' in ', e.filename, ': ', e.message].join('');
+						button.classList.remove("cantuse");
+					}
+					setTimeout(function(){},500);
+				});
+			});
+	</script>
+</body>
+</html>
